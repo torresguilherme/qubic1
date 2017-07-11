@@ -9,16 +9,32 @@ var player_mark = preload("res://nodes/objects/little-ball.scn")
 var enemy_mark = preload("res://nodes/objects/little-ball-enemy.scn")
 var ending_scene = preload("res://nodes/ui/ending_screen.tscn")
 var plays = 0
+var menu_inst
 
 # components
 onready var cube = get_node("qubic-cube")
 onready var mark_placements = cube.get_node("positions")
+onready var menu = get_node("menu")
 
 func _ready():
 	mark_instance(CPU_TURN, 3, 3, 1)
 	pass
 
 func enemy_play():
+	play = Minimax()
+	mark_instance(CPU_TURN, play.x, play.y, play.z)
+	menu.halt = false
+	pass
+
+func Minimax():
+	#valor de retorno
+	var ret = Vector3(0, 0, 0)
+	
+	#arvore de jogadas
+	
+	
+	#retorna a jogada
+	return ret
 	pass
 
 func victory_check(type, x, z, y):
@@ -83,8 +99,12 @@ func mark_instance(type, x, z, y):
 	mark_placements.get_children()[x].get_children()[z].get_children()[y].get_translation())
 	add_child(new_mark)
 	state[x][z][y] = type
+	
+	#verifica condicao de vitória
 	victory_check(type, x, z, y)
 	plays += 1
+	
+	#verifica empate
 	if plays >= 64:
 		call_draw()
 	pass
