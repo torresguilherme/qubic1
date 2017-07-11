@@ -1,0 +1,204 @@
+[gd_scene load_steps=3 format=1]
+
+[ext_resource path="res://textures/ui-texture.png" type="Texture" id=1]
+[ext_resource path="res://scripts/menu.gd" type="Script" id=2]
+
+[node name="menu" type="TextureFrame"]
+
+anchor/left = 1
+anchor/top = 1
+anchor/right = 1
+anchor/bottom = 1
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 1920.0
+margin/top = 1080.0
+margin/right = 1520.0
+margin/bottom = 680.0
+texture = ExtResource( 1 )
+stretch_mode = 0
+script/script = ExtResource( 2 )
+
+[node name="Label" type="Label" parent="."]
+
+rect/scale = Vector2( 2, 2 )
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 0.0
+margin/top = 15.0
+margin/right = 200.0
+margin/bottom = 36.0
+text = "Escolha sua próxima jogada."
+align = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="x-label" type="Label" parent="."]
+
+rect/scale = Vector2( 2, 2 )
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 27.0
+margin/top = 86.0
+margin/right = 36.0
+margin/bottom = 100.0
+text = "X"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="y-label" type="Label" parent="."]
+
+rect/scale = Vector2( 2, 2 )
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 27.0
+margin/top = 164.0
+margin/right = 35.0
+margin/bottom = 178.0
+text = "Y"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="z-label" type="Label" parent="."]
+
+rect/scale = Vector2( 2, 2 )
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 26.0
+margin/top = 244.0
+margin/right = 36.0
+margin/bottom = 258.0
+text = "Z"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="options" type="Control" parent="."]
+
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 115.0
+margin/top = 77.0
+margin/right = 155.0
+margin/bottom = 117.0
+
+[node name="x-position" type="OptionButton" parent="options"]
+
+anchor/left = 1
+anchor/top = 1
+anchor/right = 1
+anchor/bottom = 1
+rect/scale = Vector2( 2, 2 )
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 34.0
+margin/top = 40.0
+margin/right = -5.0
+margin/bottom = 20.0
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+flat = false
+align = 0
+selected = -1
+items = [  ]
+
+[node name="x-position1" type="OptionButton" parent="options"]
+
+anchor/left = 1
+anchor/top = 1
+anchor/right = 1
+anchor/bottom = 1
+rect/scale = Vector2( 2, 2 )
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 34.0
+margin/top = -45.0
+margin/right = -5.0
+margin/bottom = -65.0
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+flat = false
+align = 0
+selected = -1
+items = [  ]
+
+[node name="x-position2" type="OptionButton" parent="options"]
+
+anchor/left = 1
+anchor/top = 1
+anchor/right = 1
+anchor/bottom = 1
+rect/scale = Vector2( 2, 2 )
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 34.0
+margin/top = -130.0
+margin/right = -5.0
+margin/bottom = -150.0
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+flat = false
+align = 0
+selected = -1
+items = [  ]
+
+[node name="ok" type="Button" parent="."]
+
+rect/scale = Vector2( 2, 2 )
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 272.0
+margin/top = 245.0
+margin/right = 312.0
+margin/bottom = 267.0
+toggle_mode = false
+click_on_press = true
+enabled_focus_mode = 2
+shortcut = null
+text = "Ok!"
+flat = false
+
+[node name="warning" type="Label" parent="."]
+
+rect/scale = Vector2( 2, 2 )
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 7.0
+margin/top = 323.0
+margin/right = 200.0
+margin/bottom = 342.0
+custom_colors/font_color = Color( 0.945312, 0.228943, 0.228943, 1 )
+text = "Essa posição já está ocupada!"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+

@@ -1,0 +1,56 @@
+[gd_scene load_steps=3 format=1]
+
+[ext_resource path="res://textures/ui-texture.png" type="Texture" id=1]
+[ext_resource path="res://scripts/ending_screen.gd" type="Script" id=2]
+
+[node name="ending_screen" type="TextureFrame"]
+
+process/pause_mode = 2
+anchor/left = 3
+anchor/top = 3
+anchor/right = 3
+anchor/bottom = 3
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 960.0
+margin/top = 540.0
+margin/right = 560.0
+margin/bottom = 140.0
+texture = ExtResource( 1 )
+stretch_mode = 0
+script/script = ExtResource( 2 )
+
+[node name="Label" type="Label" parent="."]
+
+rect/scale = Vector2( 2, 2 )
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 149.0
+margin/top = 75.0
+margin/right = 194.0
+margin/bottom = 89.0
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="ok" type="Button" parent="."]
+
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 160.0
+margin/top = 244.0
+margin/right = 221.0
+margin/bottom = 277.0
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+text = "Ok"
+flat = false
+
+
