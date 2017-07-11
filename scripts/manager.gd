@@ -17,6 +17,7 @@ var enemy_mark = preload("res://nodes/objects/little-ball-enemy.scn")
 var ending_scene = preload("res://nodes/ui/ending_screen.tscn")
 var plays = 0
 var menu_inst
+var ai_tree_iterations = 1
 
 # components
 onready var cube = get_node("qubic-cube")
@@ -30,6 +31,12 @@ func _ready():
 ##############################################
 # JOGADA ADVERSÁRIA
 ##############################################
+
+# TO DO:
+# TERMINAR A AVALIAÇÃO DE JOGADAS
+# APLICAR EM CADA UM DOS NÓS
+# FAZER A FUNÇÃO RECUSRIVA DE BUSCA NOS NÓS
+# FAZER A PODA ALPHA-BETA
 
 class T_node:
 	var minimax_type
@@ -56,6 +63,9 @@ class T_node:
 		is_leaf = false
 		pass
 	
+	func get_children():
+		return children
+		pass
 
 func enemy_play():
 	var play = Minimax()
@@ -67,20 +77,33 @@ func Minimax():
 	#valor de retorno
 	var ret = Vector3(0, 0, 0)
 	
-	#arvore de jogadas
+	#constrói arvore de jogadas
 	var father = T_node.new(MAX)
 	var new
-	for i in range (4):
-		for j in range(4):
-			for k in range(4):
-				if !state[i][j][k]:
-					new = T_node.new(MIN)
-					new.set_coordinates(i, j, k)
-					father.append_child(new)
+	for i in range (ai_tree_iterations):
+		extend_tree(father)
 	
 	#retorna a jogada
 	return ret
 	pass
+
+func extend_tree(node):
+	if node.is_leaf:
+		var new
+		for i in range (4):
+			for j in range(4):
+				for k in range(4):
+					if !state[i][j][k]:
+						if node.minimax_type == MIN:
+							new = T_node.new(MAX)
+						else:
+							new = T_node.new(MIN)
+						new.set_coordinates(i, j, k)
+						node.append_child(new)
+	else:
+		var children = node.get_children()
+		for i in range(children.size()):
+			extend_tree(children[i])
 
 func play_evaluation(x, z, y):
 	var ret = 0
