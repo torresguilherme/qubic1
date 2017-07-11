@@ -1,11 +1,17 @@
 extends Node
 
-enum turns {ZERO, PLAYER_TURN, CPU_TURN}
+# identificadores de turno
+var PLAYER_TURN = 1
+var CPU_TURN = 10
+
+# tipos de avaliação do minimax
 enum minimax {MIN, MAX}
-var current_turn
+
+# estado do jogo
 var state = [[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]], [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
 [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]], [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]]
 
+# objetos
 var player_mark = preload("res://nodes/objects/little-ball.scn")
 var enemy_mark = preload("res://nodes/objects/little-ball-enemy.scn")
 var ending_scene = preload("res://nodes/ui/ending_screen.tscn")
