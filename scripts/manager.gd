@@ -1,6 +1,7 @@
 extends Node
 
 enum turns {ZERO, PLAYER_TURN, CPU_TURN}
+enum minimax {MIN, MAX}
 var current_turn
 var state = [[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]], [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
 [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]], [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]]
@@ -20,8 +21,38 @@ func _ready():
 	mark_instance(CPU_TURN, 3, 3, 1)
 	pass
 
+##############################################
+# JOGADA ADVERSÁRIA
+##############################################
+
+class T_node:
+	var minimax_type
+	var children = []
+	var value
+	var is_leaf
+	var coordinates = Vector3(0, 0, 0)
+	
+	func _init(mmtype):
+		minimax_type = mmtype
+		is_leaf = true
+		pass
+	
+	func set_value(new):
+		value = new
+		pass
+	
+	func set_coordinates(x, z, y):
+		coordinates = Vector3(x, z, y)
+		pass
+	
+	func append_child(new):
+		children.append(new)
+		is_leaf = false
+		pass
+	
+
 func enemy_play():
-	play = Minimax()
+	var play = Minimax()
 	mark_instance(CPU_TURN, play.x, play.y, play.z)
 	menu.halt = false
 	pass
@@ -31,11 +62,33 @@ func Minimax():
 	var ret = Vector3(0, 0, 0)
 	
 	#arvore de jogadas
-	
+	var father = T_node.new(MAX)
+	var new
+	for i in range (4):
+		for j in range(4):
+			for k in range(4):
+				if !state[i][j][k]:
+					new = T_node.new(MIN)
+					new.set_coordinates(i, j, k)
+					father.append_child(new)
 	
 	#retorna a jogada
 	return ret
 	pass
+
+func play_evaluation(x, z, y):
+	var ret = 0
+	# verifica se a jogada leva à vitória: 300 pontos
+	if(victory_check(CPU_TURN, x, z, y)):
+		ret += 300
+	else:
+		# verifica se a jogada impediria uma derrota: 40 pontos
+		pass
+	return ret
+
+##############################################
+# FIM DA JOGADA ADVERSÁRIA
+##############################################
 
 func victory_check(type, x, z, y):
 	var end = 0
@@ -71,14 +124,7 @@ func victory_check(type, x, z, y):
 	elif state[0][3][0] == type && state[1][2][1] == type && state[2][1][2] == type && state[3][0][3] == type:
 		end = type
 	
-	if end:
-		var es = ending_scene.instance()
-		if end == PLAYER_TURN:
-			es.get_node("Label").set_text("Vitória!")
-		else:
-			es.get_node("Label").set_text("Derrota!")
-		add_child(es)
-		get_tree().set_pause(true)
+	return end
 	pass
 
 func call_draw():
@@ -101,7 +147,15 @@ func mark_instance(type, x, z, y):
 	state[x][z][y] = type
 	
 	#verifica condicao de vitória
-	victory_check(type, x, z, y)
+	var end = victory_check(type, x, z, y)
+	if end:
+		var es = ending_scene.instance()
+		if end == PLAYER_TURN:
+			es.get_node("Label").set_text("Vitória!")
+		else:
+			es.get_node("Label").set_text("Derrota!")
+		add_child(es)
+		get_tree().set_pause(true)
 	plays += 1
 	
 	#verifica empate
