@@ -43,7 +43,7 @@ class T_node:
 	var children = []
 	var value
 	var is_leaf
-	var coordinates = Vector3(0, 0, 0)
+	var coordinates
 	
 	func _init(mmtype):
 		minimax_type = mmtype
@@ -83,7 +83,10 @@ func Minimax():
 	for i in range (ai_tree_iterations):
 		extend_tree(father)
 	
-	#retorna a jogada
+	# procura a melhor jogada
+	ret = search_minimax_tree(father)[1]
+	
+	# retorna a jogada
 	return ret
 	pass
 
@@ -105,13 +108,40 @@ func extend_tree(node):
 		for i in range(children.size()):
 			extend_tree(children[i])
 
+func search_minimax_tree(node):
+	if node.is_leaf:
+		node.set_value(play_evaluation(node.coordinates.x, node.coordinates.z, node.coordinates.y))
+		var data = [node.value, node.coordinates]
+		return data
+	else:
+		var ret = [0, Vector3(0, 0, 0)]
+		var temp = []
+		if node.minimax_type == MAX:
+			for i in range(node.get_children().size()):
+				temp = search_minimax_tree(node.get_children()[i])
+				if temp[0] >= ret[0]:
+					ret = temp
+		else:
+			ret[0] = 301
+			for i in range(node.get_children().size()):
+				temp = search_minimax_tree(node.get_children()[i])
+				if temp[0] <= ret[0]:
+					ret = temp
+		return ret
+
 func play_evaluation(x, z, y):
 	var ret = 0
 	# verifica se a jogada leva à vitória: 300 pontos
 	if(victory_check(CPU_TURN, x, z, y)):
 		ret += 300
-	else:
-		# verifica se a jogada impediria uma derrota: 40 pontos
+	else: # jogada:
+		var sum
+		# impede uma derrota: 50 pontos
+		# deixa 3 alinhadas com 1 livre: 15 pontos
+		# alinha 2 inimigas e 1 livre: 3 pontos
+		# deixa 2 alinhadas com 2 livres: 3 pontos
+		# alinha com 1 inimiga e 2 livres: 1 ponto
+		sum =  state[0][z][y] + state[1][z][y] + state[2][z][y] + state[3][z][y]
 		pass
 	return ret
 
