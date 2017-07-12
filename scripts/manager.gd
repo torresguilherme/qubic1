@@ -33,8 +33,7 @@ func _ready():
 ##############################################
 
 # TO DO:
-# TERMINAR A AVALIAÇÃO DE JOGADAS
-# FAZER A PODA ALPHA-BETA
+# FAZER A PODA ALPHA-BETA?
 
 # CLASSE DO NÓ DA ÁRVORE
 class T_node:
@@ -143,7 +142,6 @@ func search_minimax_tree(node):
 				temp = search_minimax_tree(node.get_children()[i])
 				if temp[0] < ret[0]:
 					ret = temp
-		print("valor: ", ret)
 		return ret
 
 func play_evaluation(state1, x, z, y):
@@ -353,4 +351,9 @@ func mark_instance(type, x, z, y):
 	#verifica empate
 	if plays >= 64:
 		call_draw()
+	elif plays == 25:
+		# melhora a IA caso o jogo se prolongue até 20 jogadas
+		ai_tree_iterations = 2
+	elif plays == 50:
+		ai_tree_iterations = 3
 	pass
