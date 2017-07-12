@@ -17,7 +17,7 @@ var enemy_mark = preload("res://nodes/objects/little-ball-enemy.scn")
 var ending_scene = preload("res://nodes/ui/ending_screen.tscn")
 var plays = 0
 var menu_inst
-var ai_tree_iterations = 1
+var ai_tree_iterations = 2
 
 # components
 onready var cube = get_node("qubic-cube")
@@ -34,8 +34,6 @@ func _ready():
 
 # TO DO:
 # TERMINAR A AVALIAÇÃO DE JOGADAS
-# APLICAR EM CADA UM DOS NÓS
-# FAZER A FUNÇÃO RECUSRIVA DE BUSCA NOS NÓS
 # FAZER A PODA ALPHA-BETA
 
 class T_node:
@@ -114,18 +112,19 @@ func search_minimax_tree(node):
 		var data = [node.value, node.coordinates]
 		return data
 	else:
-		var ret = [0, Vector3(0, 0, 0)]
+		var ret = [0, Vector3(4, 4, 4)]
 		var temp = []
 		if node.minimax_type == MAX:
+			ret[0] = -1
 			for i in range(node.get_children().size()):
 				temp = search_minimax_tree(node.get_children()[i])
-				if temp[0] >= ret[0]:
+				if temp[0] > ret[0]:
 					ret = temp
 		else:
 			ret[0] = 301
 			for i in range(node.get_children().size()):
 				temp = search_minimax_tree(node.get_children()[i])
-				if temp[0] <= ret[0]:
+				if temp[0] < ret[0]:
 					ret = temp
 		return ret
 
