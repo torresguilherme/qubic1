@@ -36,6 +36,7 @@ func _ready():
 # TERMINAR A AVALIAÇÃO DE JOGADAS
 # FAZER A PODA ALPHA-BETA
 
+# CLASSE DO NÓ DA ÁRVORE
 class T_node:
 	var minimax_type
 	var children = []
@@ -58,12 +59,12 @@ class T_node:
 		for i in range(4):
 			for j in range (4):
 				for k in range (4):
-					state[i][j][k] = new[i][j][k]
+					self.state[i][j][k] = new[i][j][k]
 		if x >= 0:
 			if minimax_type == MAX:
-				state[x][z][y] = 1
+				self.state[x][z][y] = 1
 			else:
-				state[x][z][y] = 10
+				self.state[x][z][y] = 10
 	
 	func set_coordinates(x, z, y):
 		coordinates = Vector3(x, z, y)
@@ -109,13 +110,13 @@ func extend_tree(node):
 		for i in range (4):
 			for j in range(4):
 				for k in range(4):
-					if !state[i][j][k]:
+					if !node.state[i][j][k]:
 						if node.minimax_type == MIN:
 							new = T_node.new(MAX)
 						else:
 							new = T_node.new(MIN)
 						new.set_coordinates(i, j, k)
-						new.set_state(node.state, node.coordinates.x, node.coordinates.z, node.coordinates.y)
+						new.set_state(node.state, node.coordinates.x, node.coordinates.y, node.coordinates.z)
 						node.append_child(new)
 	else:
 		var children = node.get_children()
@@ -137,7 +138,7 @@ func search_minimax_tree(node):
 				if temp[0] > ret[0]:
 					ret = temp
 		else:
-			ret[0] = 301
+			ret[0] = 601
 			for i in range(node.get_children().size()):
 				temp = search_minimax_tree(node.get_children()[i])
 				if temp[0] < ret[0]:
@@ -145,42 +146,92 @@ func search_minimax_tree(node):
 		print("valor: ", ret)
 		return ret
 
-func play_evaluation(state, x, z, y):
-	# impede uma derrota: 100 pontos (soma = 3)
-	# vitória: 500 pontos (soma = 30)
+func play_evaluation(state1, x, z, y):
+	# impede uma derrota: 150 pontos (soma = 3)
+	# vitória: 600 pontos (soma = 30)
 	var ret = 0
-	var linedup4 = 500
-	var interc4 = 100
+	var defeat_risk = 3
+	var victory_opportunity = 30
+	var linedup4 = 600
+	var interc4 = 150
 	
 	var sum
-	sum = state[0][z][y] + state[1][z][y] + state[2][z][y] + state[3][z][y]
-	print("linha x: ", sum)
-	if sum == 3:
+	sum = state1[0][z][y] + state1[1][z][y] + state1[2][z][y] + state1[3][z][y]
+	if sum == defeat_risk:
 		ret += interc4
-	elif sum == 30:
+	elif sum == victory_opportunity:
 		ret += linedup4
 	else:
 		ret += sum
 	
-	sum = state[x][0][y] + state[x][0][y] + state[x][2][y] + state[x][3][y]
-	print("linha z: ", sum)
-	if sum == 3:
+	sum = state1[x][0][y] + state1[x][1][y] + state1[x][2][y] + state1[x][3][y]
+	if sum == defeat_risk:
 		ret += interc4
-	elif sum == 30:
+	elif sum == victory_opportunity:
 		ret += linedup4
 	else:
 		ret += sum
 	
-	sum = state[x][z][0] + state[x][z][0] + state[x][z][0] + state[x][z][0]
-	print("linha y: ", sum)
-	if sum == 3:
+	sum = state1[x][z][0] + state1[x][z][1] + state1[x][z][2] + state1[x][z][3]
+	if sum == defeat_risk:
 		ret += interc4
-	elif sum == 30:
+	elif sum == victory_opportunity:
 		ret += linedup4
 	else:
 		ret += sum
+	if z == y:
+		sum = state1[x][0][0] + state1[x][1][1] + state1[x][2][2] + state1[x][3][3]
+		if sum == defeat_risk:
+			ret += interc4
+		elif sum == victory_opportunity:
+			ret += linedup4
+		else:
+			ret += sum
 	
-	# diagonais em 2 dimensoes
+	if z + y == 3:
+		sum = state1[x][0][3] + state1[x][1][2] + state1[x][2][1] + state1[x][3][0]
+		if sum == defeat_risk:
+			ret += interc4
+		elif sum == victory_opportunity:
+			ret += linedup4
+		else:
+			ret += sum
+	
+	if x == y:
+		sum = state1[0][z][0] + state1[1][z][1] + state1[2][z][2] + state1[3][z][3]
+		if sum == defeat_risk:
+			ret += interc4
+		elif sum == victory_opportunity:
+			ret += linedup4
+		else:
+			ret += sum
+	
+	if x + y == 3:
+		sum = state1[0][z][3] + state1[1][z][2] + state1[2][z][1] + state1[3][z][0]
+		if sum == defeat_risk:
+			ret += interc4
+		elif sum == victory_opportunity:
+			ret += linedup4
+		else:
+			ret += sum
+	
+	if x == z:
+		sum = state1[0][0][y] + state1[1][1][y] + state1[2][2][y] + state1[3][3][y]
+		if sum == defeat_risk:
+			ret += interc4
+		elif sum == victory_opportunity:
+			ret += linedup4
+		else:
+			ret += sum
+	
+	if x + z == 3:
+		sum = state1[0][3][y] + state1[1][2][y] + state1[2][1][y] + state1[3][0][y]
+		if sum == defeat_risk:
+			ret += interc4
+		elif sum == victory_opportunity:
+			ret += linedup4
+		else:
+			ret += sum
 	
 	return ret
 
@@ -254,6 +305,9 @@ func mark_instance(type, x, z, y):
 			es.get_node("Label").set_text("Derrota!")
 		add_child(es)
 		get_tree().set_pause(true)
+	else:
+		if type == PLAYER_TURN:
+			menu.enemy_playing = true
 	plays += 1
 	
 	#verifica empate

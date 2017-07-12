@@ -52,7 +52,6 @@ func _process(delta):
 		manager.mark_instance(manager.PLAYER_TURN, buttons[0].selected, buttons[2].selected, buttons[1].selected)
 		ok_button.set_pressed(false)
 		ok_to_go = false
-		enemy_playing = true
 	
 	if enemy_playing:
 		warning.set_text("Adversário jogando... aguarde!")
