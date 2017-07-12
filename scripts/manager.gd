@@ -154,8 +154,9 @@ func play_evaluation(state1, x, z, y):
 	var victory_opportunity = 30
 	var linedup4 = 600
 	var interc4 = 150
-	
 	var sum
+	
+	# linhas em 1 dimensao
 	sum = state1[0][z][y] + state1[1][z][y] + state1[2][z][y] + state1[3][z][y]
 	if sum == defeat_risk:
 		ret += interc4
@@ -179,6 +180,8 @@ func play_evaluation(state1, x, z, y):
 		ret += linedup4
 	else:
 		ret += sum
+	
+	# diagonais em 2 dimensoes
 	if z == y:
 		sum = state1[x][0][0] + state1[x][1][1] + state1[x][2][2] + state1[x][3][3]
 		if sum == defeat_risk:
@@ -226,6 +229,43 @@ func play_evaluation(state1, x, z, y):
 	
 	if x + z == 3:
 		sum = state1[0][3][y] + state1[1][2][y] + state1[2][1][y] + state1[3][0][y]
+		if sum == defeat_risk:
+			ret += interc4
+		elif sum == victory_opportunity:
+			ret += linedup4
+		else:
+			ret += sum
+	
+	#diagonais em 3 dimensoes
+	if x == z  && z == y:
+		sum = state1[0][0][0] + state1[1][1][1] + state1[2][2][2] + state1[3][3][3]
+		if sum == defeat_risk:
+			ret += interc4
+		elif sum == victory_opportunity:
+			ret += linedup4
+		else:
+			ret += sum
+	
+	if z == y:
+		sum = state1[3][0][0] + state1[2][1][1] + state1[1][2][2] + state1[0][3][3]
+		if sum == defeat_risk:
+			ret += interc4
+		elif sum == victory_opportunity:
+			ret += linedup4
+		else:
+			ret += sum
+	
+	if x == y:
+		sum = state1[0][3][0] + state1[1][2][1] + state1[2][1][2] + state1[3][0][3]
+		if sum == defeat_risk:
+			ret += interc4
+		elif sum == victory_opportunity:
+			ret += linedup4
+		else:
+			ret += sum
+	
+	if x == z:
+		sum = state1[0][0][3] + state1[1][1][2] + state1[2][2][1] + state1[3][3][0]
 		if sum == defeat_risk:
 			ret += interc4
 		elif sum == victory_opportunity:
