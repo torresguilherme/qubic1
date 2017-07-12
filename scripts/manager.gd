@@ -34,6 +34,7 @@ func _ready():
 
 # TO DO:
 # TERMINAR A AVALIAÇÃO DE JOGADAS
+# STATE PRÓPRIO EM CADA NÓ DA ÁRVORE
 # FAZER A PODA ALPHA-BETA
 
 class T_node:
@@ -129,18 +130,41 @@ func search_minimax_tree(node):
 		return ret
 
 func play_evaluation(x, z, y):
+	# impede uma derrota: 50 pontos (soma = 3)
+	# deixa 3 alinhadas com 1 livre: 15 pontos (soma = 20)
+	# alinha com 2 inimigas e 1 livre: 3 pontos (soma = 2)
+	# deixa 2 alinhadas com 2 livres: 3 pontos (soma = 10)
+	# alinha com 1 inimiga e 2 livres: 1 ponto (soma = 1)
 	var ret = 0
+	var linedup2 = 2
+	var linedup3 = 15
+	var linedup4 = 300
+	var interc2 = 1
+	var interc3 = 3
+	var interc4 = 40
+	
 	# verifica se a jogada leva à vitória: 300 pontos
 	if(victory_check(CPU_TURN, x, z, y)):
-		ret += 300
+		ret += linedup4
 	else: # jogada:
 		var sum
-		# impede uma derrota: 50 pontos
-		# deixa 3 alinhadas com 1 livre: 15 pontos
-		# alinha 2 inimigas e 1 livre: 3 pontos
-		# deixa 2 alinhadas com 2 livres: 3 pontos
-		# alinha com 1 inimiga e 2 livres: 1 ponto
-		sum =  state[0][z][y] + state[1][z][y] + state[2][z][y] + state[3][z][y]
+		# impede uma derrota: 50 pontos (soma = 3)
+		# deixa 3 alinhadas com 1 livre: 15 pontos (soma = 20)
+		# alinha com 2 inimigas e 1 livre: 3 pontos (soma = 2)
+		# deixa 2 alinhadas com 2 livres: 3 pontos (soma = 10)
+		# alinha com 1 inimiga e 2 livres: 1 ponto (soma = 1)
+		
+		sum = state[0][z][y] + state[1][z][y] + state[2][z][y] + state[3][z][y]
+		if sum == 1:
+			ret += interc2
+		elif sum == 2:
+			ret += interc3
+		elif sum == 3:
+			ret += interc4
+		elif sum == 10:
+			ret += linedup2
+		elif sum == 20:
+			ret += linedup3
 		pass
 	return ret
 
