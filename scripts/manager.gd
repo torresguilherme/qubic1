@@ -17,7 +17,7 @@ var enemy_mark = preload("res://nodes/objects/little-ball-enemy.scn")
 var ending_scene = preload("res://nodes/ui/ending_screen.tscn")
 var plays = 0
 var menu_inst
-var ai_tree_iterations = 2
+var ai_tree_iterations = 1
 
 # components
 onready var cube = get_node("qubic-cube")
@@ -34,15 +34,16 @@ func _ready():
 
 # TO DO:
 # TERMINAR A AVALIAÇÃO DE JOGADAS
-# STATE PRÓPRIO EM CADA NÓ DA ÁRVORE
 # FAZER A PODA ALPHA-BETA
 
 class T_node:
 	var minimax_type
 	var children = []
+	var state = [[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]], [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
+[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]], [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]]
 	var value
 	var is_leaf
-	var coordinates
+	var coordinates = Vector3(-1, -1, -1)
 	
 	func _init(mmtype):
 		minimax_type = mmtype
@@ -52,6 +53,17 @@ class T_node:
 	func set_value(new):
 		value = new
 		pass
+	
+	func set_state(new, x, z, y):
+		for i in range(4):
+			for j in range (4):
+				for k in range (4):
+					state[i][j][k] = new[i][j][k]
+		if x >= 0:
+			if minimax_type == MAX:
+				state[x][z][y] = 1
+			else:
+				state[x][z][y] = 10
 	
 	func set_coordinates(x, z, y):
 		coordinates = Vector3(x, z, y)
@@ -78,6 +90,7 @@ func Minimax():
 	
 	#constrói arvore de jogadas
 	var father = T_node.new(MAX)
+	father.set_state(state, -1, 0, 0)
 	var new
 	for i in range (ai_tree_iterations):
 		extend_tree(father)
@@ -86,6 +99,7 @@ func Minimax():
 	ret = search_minimax_tree(father)[1]
 	
 	# retorna a jogada
+	print("melhor jogada encontrada: ", ret)
 	return ret
 	pass
 
@@ -101,6 +115,7 @@ func extend_tree(node):
 						else:
 							new = T_node.new(MIN)
 						new.set_coordinates(i, j, k)
+						new.set_state(node.state, node.coordinates.x, node.coordinates.z, node.coordinates.y)
 						node.append_child(new)
 	else:
 		var children = node.get_children()
@@ -109,7 +124,7 @@ func extend_tree(node):
 
 func search_minimax_tree(node):
 	if node.is_leaf:
-		node.set_value(play_evaluation(node.coordinates.x, node.coordinates.z, node.coordinates.y))
+		node.set_value(play_evaluation(node.state, node.coordinates.x, node.coordinates.y, node.coordinates.z))
 		var data = [node.value, node.coordinates]
 		return data
 	else:
@@ -127,45 +142,46 @@ func search_minimax_tree(node):
 				temp = search_minimax_tree(node.get_children()[i])
 				if temp[0] < ret[0]:
 					ret = temp
+		print("valor: ", ret)
 		return ret
 
-func play_evaluation(x, z, y):
-	# impede uma derrota: 50 pontos (soma = 3)
-	# deixa 3 alinhadas com 1 livre: 15 pontos (soma = 20)
-	# alinha com 2 inimigas e 1 livre: 3 pontos (soma = 2)
-	# deixa 2 alinhadas com 2 livres: 3 pontos (soma = 10)
-	# alinha com 1 inimiga e 2 livres: 1 ponto (soma = 1)
+func play_evaluation(state, x, z, y):
+	# impede uma derrota: 100 pontos (soma = 3)
+	# vitória: 500 pontos (soma = 30)
 	var ret = 0
-	var linedup2 = 2
-	var linedup3 = 15
-	var linedup4 = 300
-	var interc2 = 1
-	var interc3 = 3
-	var interc4 = 40
+	var linedup4 = 500
+	var interc4 = 100
 	
-	# verifica se a jogada leva à vitória: 300 pontos
-	if(victory_check(CPU_TURN, x, z, y)):
+	var sum
+	sum = state[0][z][y] + state[1][z][y] + state[2][z][y] + state[3][z][y]
+	print("linha x: ", sum)
+	if sum == 3:
+		ret += interc4
+	elif sum == 30:
 		ret += linedup4
-	else: # jogada:
-		var sum
-		# impede uma derrota: 50 pontos (soma = 3)
-		# deixa 3 alinhadas com 1 livre: 15 pontos (soma = 20)
-		# alinha com 2 inimigas e 1 livre: 3 pontos (soma = 2)
-		# deixa 2 alinhadas com 2 livres: 3 pontos (soma = 10)
-		# alinha com 1 inimiga e 2 livres: 1 ponto (soma = 1)
-		
-		sum = state[0][z][y] + state[1][z][y] + state[2][z][y] + state[3][z][y]
-		if sum == 1:
-			ret += interc2
-		elif sum == 2:
-			ret += interc3
-		elif sum == 3:
-			ret += interc4
-		elif sum == 10:
-			ret += linedup2
-		elif sum == 20:
-			ret += linedup3
-		pass
+	else:
+		ret += sum
+	
+	sum = state[x][0][y] + state[x][0][y] + state[x][2][y] + state[x][3][y]
+	print("linha z: ", sum)
+	if sum == 3:
+		ret += interc4
+	elif sum == 30:
+		ret += linedup4
+	else:
+		ret += sum
+	
+	sum = state[x][z][0] + state[x][z][0] + state[x][z][0] + state[x][z][0]
+	print("linha y: ", sum)
+	if sum == 3:
+		ret += interc4
+	elif sum == 30:
+		ret += linedup4
+	else:
+		ret += sum
+	
+	# diagonais em 2 dimensoes
+	
 	return ret
 
 ##############################################
