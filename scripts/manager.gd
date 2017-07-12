@@ -25,15 +25,12 @@ onready var mark_placements = cube.get_node("positions")
 onready var menu = get_node("menu")
 
 func _ready():
-	mark_instance(CPU_TURN, 3, 3, 1)
+	mark_instance(CPU_TURN, 0, 0, 0)
 	pass
 
 ##############################################
 # JOGADA ADVERSÁRIA
 ##############################################
-
-# TO DO:
-# FAZER A PODA ALPHA-BETA?
 
 # CLASSE DO NÓ DA ÁRVORE
 class T_node:
@@ -137,7 +134,7 @@ func search_minimax_tree(node):
 				if temp[0] > ret[0]:
 					ret = temp
 		else:
-			ret[0] = 601
+			ret[0] = 1000
 			for i in range(node.get_children().size()):
 				temp = search_minimax_tree(node.get_children()[i])
 				if temp[0] < ret[0]:
@@ -351,9 +348,7 @@ func mark_instance(type, x, z, y):
 	#verifica empate
 	if plays >= 64:
 		call_draw()
-	elif plays == 25:
+	elif plays == 48:
 		# melhora a IA caso o jogo se prolongue até 20 jogadas
-		ai_tree_iterations = 2
-	elif plays == 50:
 		ai_tree_iterations = 3
 	pass
