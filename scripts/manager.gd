@@ -84,19 +84,15 @@ func enemy_play():
 func Minimax():
 	#valor de retorno
 	var ret = Vector3(0, 0, 0)
-	
 	#constrói arvore de jogadas
 	var father = T_node.new(MAX)
 	father.set_state(state, -1, 0, 0)
 	var new
 	for i in range (ai_tree_iterations):
 		extend_tree(father)
-	
 	# procura a melhor jogada
 	ret = search_minimax_tree(father)[1]
-	
 	# retorna a jogada
-	print("melhor jogada encontrada: ", ret)
 	return ret
 	pass
 
@@ -349,6 +345,6 @@ func mark_instance(type, x, z, y):
 	if plays >= 64:
 		call_draw()
 	elif plays == 48:
-		# melhora a IA caso o jogo se prolongue até 20 jogadas
+		# melhora a IA caso o jogo se prolongue até 48 jogadas
 		ai_tree_iterations = 3
 	pass
